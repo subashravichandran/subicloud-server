@@ -28,8 +28,7 @@ Install ubuntu server 26.04
 sudo apt update
 sudo apt upgrade -y
 sudo apt autoremove -y
-sudsubi $@bari
-o reboot
+sudo reboot
 ```
 
 ### Verification
