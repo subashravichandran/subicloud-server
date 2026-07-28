@@ -1,3 +1,5 @@
+name: homarr
+
 services:
   homarr:
     image: ghcr.io/homarr-labs/homarr:latest
@@ -9,7 +11,7 @@ services:
       - "7575:7575"
 
     env_file:
-      - .env
+      - /srv/data/homarr/.env
 
     volumes:
       - /srv/data/homarr:/appdata
