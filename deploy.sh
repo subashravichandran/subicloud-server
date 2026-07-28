@@ -11,6 +11,10 @@ error() {
     exit 1
 }
 
+success() {
+    echo "[SUCCESS] $1"
+}
+
 SERVER="subi@192.168.1.6"
 TARGET="/opt/subicloud"
 
@@ -39,4 +43,4 @@ log "Running deployment..."
 ssh "$SERVER" "bash $TARGET/scripts/deploy_app.sh $APP"
 
 echo ""
-log "Deployment completed successfully."
+success "Deployment completed successfully."
