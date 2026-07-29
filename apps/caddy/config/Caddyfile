@@ -1,0 +1,3 @@
+http://dash.subicloud.com {
+    reverse_proxy homarr:7575
+}

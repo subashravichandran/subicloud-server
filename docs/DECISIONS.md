@@ -237,3 +237,116 @@ Advantages:
 Trade-off:
 
 - Applications requiring initialization must maintain an `init.sh` script.
+
+---
+
+## Decision
+
+Store application configuration in Git.
+
+### Reason
+
+Application configuration is source code.
+
+Configuration should be version controlled, reviewed and recoverable from Git.
+
+Runtime state remains under /srv/data.
+
+---
+
+## Decision
+
+Cloudflare Tunnel is the recommended method for exposing SubiCloud services.
+
+### Reason
+
+Many residential Internet providers use CGNAT, making inbound connections impossible even with correct router configuration.
+
+Cloudflare Tunnel provides:
+
+- HTTPS
+- No port forwarding
+- No static IP
+- Works behind CGNAT
+
+Traditional public-IP deployments remain supported.
+
+---
+
+## Decision
+
+Manage Cloudflare Tunnel locally instead of using Dashboard-managed token authentication.
+
+### Reason
+
+Locally managed tunnels provide:
+
+- Infrastructure as Code
+- Version-controlled tunnel configuration
+- Scriptable DNS management
+- Independence from Cloudflare dashboard UI changes
+
+Only tunnel credentials remain outside Git.
+
+---
+
+## Decision
+
+Cloudflared follows the standard SubiCloud application model.
+
+### Structure
+
+```
+apps/cloudflared/
+├── app.env
+├── compose.yml
+├── config.template.yml
+├── init.sh
+└── README.md
+```
+
+Runtime:
+
+```
+/srv/data/cloudflared/
+├── config.yml
+└── credentials.json
+```
+
+### Reason
+
+Cloudflared should behave like every other SubiCloud application instead of requiring special deployment logic.
+
+---
+
+## Decision
+
+Generate Cloudflared configuration during deployment.
+
+### Reason
+
+The repository stores configuration templates.
+
+`init.sh` generates the runtime configuration before Docker starts.
+
+Advantages:
+
+- Version-controlled configuration
+- Runtime-specific values injected during deployment
+- No generated configuration stored in Git
+
+---
+
+## Decision
+
+Cloudflare Tunnel credentials are runtime secrets.
+
+### Reason
+
+`credentials.json` uniquely identifies the tunnel and must never be committed to Git.
+
+Only the server stores these credentials under:
+
+```
+/srv/data/cloudflared/credentials.json
+```

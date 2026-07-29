@@ -4,7 +4,7 @@ services:
   caddy:
     image: caddy:2
 
-    container_name: caddy
+    container_name: ${CONTAINER_NAME}
 
     restart: unless-stopped
 
@@ -13,7 +13,7 @@ services:
       - "443:443"
 
     volumes:
-      - /srv/data/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./config:/etc/caddy:ro
       - /srv/data/caddy/data:/data
       - /srv/data/caddy/config:/config
 

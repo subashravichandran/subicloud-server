@@ -90,6 +90,19 @@ This directory is **never** overwritten during deployment.
 
 ---
 
+Example:
+
+```
+/srv/data/cloudflared/
+├── config.yml
+└── credentials.json
+```
+
+`config.yml` is generated during deployment from a version-controlled template.
+
+`credentials.json` is a runtime secret and is never committed to Git.
+
+
 # Application Layout
 
 Each application is self-contained.
@@ -98,11 +111,12 @@ Example:
 
 ```
 apps/
-└── homarr/
+└── <app>/
     ├── app.env
     ├── compose.yml
-    ├── init.sh          # Optional
-    ├── .env.example     # Optional
+    ├── init.sh
+    ├── config/         # Optional
+    ├── .env.example    # Optional
     └── README.md
 ```
 
@@ -141,6 +155,35 @@ Used to perform application-specific initialization such as:
 - Creating additional runtime directories
 - Copying default configuration files
 - Performing first-time setup
+
+### Configuration Templates
+
+Applications may provide version-controlled configuration templates.
+
+Example:
+
+```
+apps/
+└── cloudflared/
+    ├── config.template.yml
+    └── init.sh
+```
+
+During deployment, `init.sh` generates the runtime configuration under:
+
+```
+/srv/data/<app>/
+```
+
+Example:
+
+```
+/srv/data/cloudflared/config.yml
+```
+
+Template files remain in Git while generated configuration is treated as runtime state.
+
+Only secrets (such as credentials) are stored directly under `/srv/data`.
 
 ### README.md
 
@@ -243,7 +286,8 @@ apps/
     ├── app.env
     ├── compose.yml
     ├── init.sh
-    ├── Caddyfile
+    ├── config/
+    │   └── Caddyfile
     └── README.md
 ```
 
@@ -269,3 +313,9 @@ Runtime layout:
 - Every application follows the same directory structure.
 - The deployment engine contains no application-specific logic.
 - Application-specific initialization belongs in `init.sh`.
+- Configuration files belong in Git.
+- Runtime state belongs under /srv/data.
+- Configuration templates belong in Git.
+- Generated configuration belongs under `/srv/data`.
+- Secrets are never committed to Git.
+- Runtime configuration may be generated during deployment by `init.sh`.

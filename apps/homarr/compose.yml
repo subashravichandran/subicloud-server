@@ -3,7 +3,7 @@ name: homarr
 services:
   homarr:
     image: ghcr.io/homarr-labs/homarr:latest
-    container_name: homarr
+    container_name: ${CONTAINER_NAME}
 
     restart: unless-stopped
 

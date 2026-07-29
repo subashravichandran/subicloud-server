@@ -391,21 +391,57 @@ Contains:
 - compose.yml
 - app.env
 - init.sh
-- Caddyfile
+- config/
+    - Caddyfile
 - README.md
 
 Planned runtime:
 
 ```
 /srv/data/caddy
-├── Caddyfile
 ├── data/
 └── config/
 ```
 
-`init.sh` creates the runtime directories and copies the default `Caddyfile` during deployment.
+init.sh creates the runtime directories.
+
+The Caddyfile is version controlled and mounted directly from the application directory.
 
 ---
+
+## Cloudflared
+
+Directory:
+
+```
+apps/cloudflared
+```
+
+Status:
+
+✅ Working (Locally Managed Tunnel)
+
+Contains:
+
+- compose.yml
+- app.env
+- config.template.yml
+- init.sh
+- README.md
+
+Runtime:
+
+```
+/srv/data/cloudflared/
+├── config.yml
+└── credentials.json
+```
+
+Purpose:
+
+- Connect SubiCloud to Cloudflare Tunnel
+- Generate runtime configuration during deployment
+- Route public hostnames to internal Docker services
 
 # Design Principles
 
@@ -448,6 +484,18 @@ Planned runtime:
 
 ✅ Deployment verification
 
+✅ Cloudflare Tunnel authentication
+
+✅ Named tunnel created
+
+✅ Local tunnel management
+
+✅ Runtime configuration generation
+
+✅ Cloudflare DNS routing
+
+✅ Cloudflared application integrated into deployment engine
+
 ---
 
 # Next Milestones
@@ -468,8 +516,9 @@ Planned runtime:
 - Deploy Caddy
 - Configure reverse proxy
 - Local domain routing
-- HTTPS
-- Cloudflare integration
+- Cloudflare Tunnel (locally managed)
+- Public service routing
+- Automatic HTTPS
 
 ## Applications
 
@@ -538,6 +587,6 @@ Version:
 v0.1 Foundation
 ```
 
-Current focus:
+# Current focus:
 
-Complete the reverse proxy layer using Caddy while keeping the deployment engine generic and application-agnostic.
+Complete service routing through Caddy and expand Cloudflare Tunnel ingress generation while keeping the deployment engine generic and application-agnostic.

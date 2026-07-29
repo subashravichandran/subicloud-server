@@ -1,0 +1,22 @@
+name: cloudflared
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: ${CONTAINER_NAME}
+
+    command: tunnel run
+
+    restart: unless-stopped
+
+    volumes:
+      - ${APP_DATA_DIR}/config.yml:/etc/cloudflared/config.yml:ro
+      - ${APP_DATA_DIR}/credentials.json:/etc/cloudflared/credentials.json:ro
+
+    networks:
+      - default
+
+networks:
+  default:
+    external: true
+    name: ${NETWORK_NAME}

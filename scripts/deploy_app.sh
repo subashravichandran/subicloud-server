@@ -39,7 +39,9 @@ if [ ! -f "$CONFIG_FILE" ]; then
     error "Platform configuration not found: $CONFIG_FILE"
 fi
 
+set -a
 source "$CONFIG_FILE"
+set +a
 
 ################################################################################
 # Application paths
@@ -47,6 +49,18 @@ source "$CONFIG_FILE"
 
 APP_DIR="$PLATFORM_DIR/apps/$APP"
 APP_DATA_DIR="$DATA_DIR/$APP"
+
+export APP_DIR
+export APP_DATA_DIR
+
+################################################################################
+# File write validation
+################################################################################
+
+if [ ! -w "$DATA_DIR" ]; then
+    error "No write permission to $DATA_DIR"
+    exit 1
+fi
 
 ################################################################################
 # Validate application
@@ -69,7 +83,9 @@ if [ ! -f "$APP_CONFIG" ]; then
     error "Missing app.env for '$APP'."
 fi
 
+set -a
 source "$APP_CONFIG"
+set +a
 
 ################################################################################
 # Deploy
@@ -103,7 +119,7 @@ cd "$APP_DIR"
 
 log "Starting Docker containers..."
 
-docker compose up -d
+docker compose up -d --force-recreate
 
 ################################################################################
 # Verify deployment

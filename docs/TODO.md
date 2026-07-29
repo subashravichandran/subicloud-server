@@ -71,3 +71,58 @@ instead of
 ↓
 
 apps/*
+
+
+## Cloudflare Tunnel
+
+Status:
+
+Core integration completed.
+
+### Remaining Tasks
+
+- Automatically generate Cloudflared ingress from application metadata.
+- Automatically create DNS records during deployment.
+- Support multiple public hostnames.
+- Reload Cloudflared automatically after configuration changes.
+- Validate public routes after deployment.
+- Add automatic HTTPS verification.
+- Support wildcard hostnames.
+
+## Deployment Engine
+
+### Cloudflared Automation
+
+Future goal:
+
+Deploying an application with public exposure should automatically:
+
+1. Read hostname metadata from `app.env`
+2. Update `config.template.yml`
+3. Generate `/srv/data/cloudflared/config.yml`
+4. Reload Cloudflared
+5. Create Cloudflare DNS record (if required)
+6. Verify public accessibility
+
+Example:
+
+```
+./deploy.sh nextcloud
+```
+
+↓
+
+Nextcloud deployed
+
+↓
+
+Cloudflare updated
+
+↓
+
+HTTPS verified
+
+↓
+
+Deployment complete
+```
