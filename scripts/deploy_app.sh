@@ -77,11 +77,26 @@ source "$APP_CONFIG"
 
 log "Deploying $DISPLAY_NAME..."
 
+################################################################################
+# Initialize runtime data
+################################################################################
+
 mkdir -p "$APP_DATA_DIR"
 
-if [ ! -f "$APP_DATA_DIR/.env" ]; then
+if [ -f "$APP_DIR/.env.example" ] && [ ! -f "$APP_DATA_DIR/.env" ]; then
     log "Creating .env from template..."
     cp "$APP_DIR/.env.example" "$APP_DATA_DIR/.env"
+fi
+
+################################################################################
+# Run application initialization (optional)
+################################################################################
+
+INIT_SCRIPT="$APP_DIR/init.sh"
+
+if [ -f "$INIT_SCRIPT" ]; then
+    log "Running application initialization..."
+    source "$INIT_SCRIPT"
 fi
 
 cd "$APP_DIR"

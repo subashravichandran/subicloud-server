@@ -200,3 +200,40 @@ The deployment engine contains no application-specific logic.
 All application-specific information belongs inside the application's own directory.
 
 The deployment engine should work for any application that follows the platform conventions.
+
+# 29-07-2026
+
+## Optional Application Initialization
+
+### Decision
+
+Applications may provide an optional `init.sh` script.
+
+The deployment engine automatically executes this script during deployment after
+creating the application's runtime directory.
+
+### Rationale
+
+Different applications have different initialization requirements.
+
+Examples include:
+
+- Creating additional runtime directories
+- Copying default configuration files
+- Performing first-time setup
+
+Keeping this logic inside each application prevents the deployment engine from
+accumulating application-specific behavior.
+
+### Consequences
+
+Advantages:
+
+- Generic deployment engine
+- Self-contained applications
+- Easy to add new applications
+- No hardcoded application logic
+
+Trade-off:
+
+- Applications requiring initialization must maintain an `init.sh` script.

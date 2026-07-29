@@ -1,7 +1,7 @@
 # SubiCloud - Project State
 
-**Version:** v0.1 Foundation
-**Status:** Generic deployment engine completed.
+Version: v0.2 Foundation
+Status: Generic deployment engine completed. Reverse proxy implementation in progress.
 
 ---
 
@@ -114,10 +114,11 @@ Example:
 
 ```
 apps/
-└── homarr/
-    ├── app.env
-    ├── compose.yml
-    ├── .env.example
+└── <app>/
+    ├── app.env          # Required
+    ├── compose.yml      # Required
+    ├── init.sh          # Optional
+    ├── .env.example     # Optional
     └── README.md
 ```
 
@@ -174,6 +175,22 @@ Runtime copy:
 ```
 
 Never committed back to Git.
+
+---
+
+## init.sh
+
+Optional application initialization script.
+
+Executed by the deployment engine during every deployment.
+
+Typical responsibilities include:
+
+- Creating application-specific runtime directories
+- Copying default configuration files
+- Performing first-time initialization
+
+`init.sh` should be idempotent so it can safely run multiple times.
 
 ---
 
@@ -240,17 +257,37 @@ Runs on the server.
 Workflow:
 
 1. Validate application argument.
-2. Load platform.conf.
+2. Load platform configuration.
 3. Determine application directory.
 4. Verify application exists.
-5. Load app.env.
-6. Create runtime data directory.
-7. Create .env from template if needed.
-8. Run Docker Compose.
-9. Verify container started.
-10. Show logs if deployment fails.
+5. Load application metadata.
+6. Create the application's runtime directory.
+7. Create .env from .env.example (if present).
+8. Execute init.sh (if present).
+9. Run Docker Compose.
+10. Verify the container started.
+11. Show logs if deployment fails.
 
 The deployment engine contains no application-specific logic.
+
+---
+
+# Runtime Initialization
+
+Applications may optionally provide an `init.sh`.
+
+The deployment engine executes this script during every deployment.
+
+The deployment engine is responsible for:
+
+- Creating `/srv/data/<app>`
+- Initializing `.env` from `.env.example` (if present)
+
+Each application's `init.sh` is responsible only for application-specific initialization such as:
+
+- Creating additional runtime directories
+- Copying default configuration files
+- Preparing runtime data before the container starts
 
 ---
 
@@ -328,6 +365,7 @@ Contains:
 
 - compose.yml
 - app.env
+- init.sh
 - .env.example
 - README.md
 
@@ -336,6 +374,36 @@ Runtime:
 ```
 /srv/data/homarr
 ```
+## Caddy
+
+Directory:
+
+```
+apps/caddy
+```
+
+Status:
+
+🚧 In Progress
+
+Contains:
+
+- compose.yml
+- app.env
+- init.sh
+- Caddyfile
+- README.md
+
+Planned runtime:
+
+```
+/srv/data/caddy
+├── Caddyfile
+├── data/
+└── config/
+```
+
+`init.sh` creates the runtime directories and copies the default `Caddyfile` during deployment.
 
 ---
 
@@ -370,6 +438,10 @@ Runtime:
 
 ✅ Automatic .env creation
 
+✅ Optional application initialization (init.sh)
+
+✅ Shared Docker network
+
 ✅ Logging helpers
 
 ✅ Application metadata (app.env)
@@ -391,12 +463,28 @@ Runtime:
 
 ---
 
+## Reverse Proxy
+
+- Deploy Caddy
+- Configure reverse proxy
+- Local domain routing
+- HTTPS
+- Cloudflare integration
+
 ## Applications
 
 - FileBrowser
-- Caddy
 - Nextcloud
 - Uptime Kuma
+
+---
+
+## Deferred Architecture Improvements
+
+- Configurable Docker network (`NETWORK_NAME`)
+- Multi-stack deployments
+- Stack-level configuration
+- Unified `subicloud` CLI
 
 ---
 
@@ -452,4 +540,4 @@ v0.1 Foundation
 
 Current focus:
 
-Build a robust deployment platform first, then add applications on top of it.
+Complete the reverse proxy layer using Caddy while keeping the deployment engine generic and application-agnostic.

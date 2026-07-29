@@ -21,7 +21,8 @@ The platform follows a simple principle:
 │   └── <app>/
 │       ├── app.env
 │       ├── compose.yml
-│       ├── .env.example
+│       ├── init.sh         # Optional
+│       ├── .env.example    # Optional
 │       └── README.md
 │
 ├── configs/
@@ -83,7 +84,7 @@ Contains:
 - application data
 - databases
 - uploads
-- runtime configuration (.env)
+- runtime configuration (for example, `.env`)
 
 This directory is **never** overwritten during deployment.
 
@@ -100,7 +101,8 @@ apps/
 └── homarr/
     ├── app.env
     ├── compose.yml
-    ├── .env.example
+    ├── init.sh          # Optional
+    ├── .env.example     # Optional
     └── README.md
 ```
 
@@ -122,13 +124,23 @@ Defines how Docker runs the application.
 
 ### .env.example
 
-Template used to create the runtime configuration on first deployment.
+Optional template used to create the runtime configuration on first deployment.
 
 Runtime copy:
 
 ```
 /srv/data/<app>/.env
 ```
+
+### init.sh
+
+Optional application initialization script.
+
+Used to perform application-specific initialization such as:
+
+- Creating additional runtime directories
+- Copying default configuration files
+- Performing first-time setup
 
 ### README.md
 
@@ -183,10 +195,67 @@ Deployment steps:
 1. Synchronize platform files.
 2. Load platform configuration.
 3. Load application metadata.
-4. Create runtime data directory if necessary.
-5. Create `.env` if it doesn't exist.
-6. Start or update the application.
-7. Verify the container is running.
+4. Create the application's runtime directory.
+5. Initialize the runtime environment (`.env` if applicable).
+6. Run `init.sh` (if present).
+7. Start or update the application.
+8. Verify the container is running.
+
+Application lifecycle:
+
+```
+deploy_app.sh
+    │
+    ├── Create runtime directory
+    ├── Initialize runtime environment
+    ├── Run init.sh (optional)
+    ├── docker compose up -d
+    └── Verify deployment
+```
+
+---
+
+# Application Initialization
+
+Each application may optionally provide an `init.sh` script.
+
+The deployment engine invokes this script during every deployment after creating
+the application's runtime directory and initializing the runtime environment.
+
+Purpose of `init.sh`:
+
+- Create application-specific runtime directories
+- Copy default configuration files
+- Perform first-time application initialization
+- Prepare runtime data required before the container starts
+
+The deployment engine does **not** contain application-specific initialization
+logic. Instead, each application is responsible for defining its own
+initialization process.
+
+`init.sh` should be idempotent so it can safely run on every deployment.
+
+Example:
+
+```
+apps/
+└── caddy/
+    ├── app.env
+    ├── compose.yml
+    ├── init.sh
+    ├── Caddyfile
+    └── README.md
+```
+
+Runtime layout:
+
+```
+/srv/data/
+└── caddy/
+    ├── Caddyfile
+    ├── data/
+    └── config/
+```
 
 ---
 
@@ -199,4 +268,4 @@ Deployment steps:
 - Runtime configuration is never committed to Git.
 - Every application follows the same directory structure.
 - The deployment engine contains no application-specific logic.
-
+- Application-specific initialization belongs in `init.sh`.
