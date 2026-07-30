@@ -1,0 +1,32 @@
+name: redis
+
+services:
+  redis:
+    image: ${IMAGE}:${IMAGE_TAG}
+
+    container_name: ${CONTAINER_NAME}
+
+    restart: unless-stopped
+
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - ${REDIS_PASSWORD}
+
+    environment:
+      - REDIS_PASSWORD
+
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
+
+    networks:
+      default:
+        aliases:
+          - redis
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true

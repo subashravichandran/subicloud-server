@@ -2,7 +2,7 @@ name: caddy
 
 services:
   caddy:
-    image: caddy:2
+    image: ${IMAGE}:${IMAGE_TAG}
 
     container_name: ${CONTAINER_NAME}
 

@@ -1,3 +1,7 @@
 http://dash.subicloud.com {
     reverse_proxy homarr:7575
 }
+
+http://cloud.subicloud.com {
+    reverse_proxy nextcloud:80
+}

@@ -2,7 +2,7 @@ name: homarr
 
 services:
   homarr:
-    image: ghcr.io/homarr-labs/homarr:latest
+    image: ${IMAGE}:${IMAGE_TAG}
     container_name: ${CONTAINER_NAME}
 
     restart: unless-stopped

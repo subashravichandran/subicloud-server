@@ -2,11 +2,14 @@ name: cloudflared
 
 services:
   cloudflared:
-    image: cloudflare/cloudflared:latest
+    image: ${IMAGE}:${IMAGE_TAG}
     container_name: ${CONTAINER_NAME}
 
-    command: tunnel run
-
+    command:
+      - tunnel
+      - --config
+      - /etc/cloudflared/config.yml
+      - run
     restart: unless-stopped
 
     volumes:

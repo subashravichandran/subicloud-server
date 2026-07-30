@@ -1,0 +1,27 @@
+name: postgres
+
+services:
+  postgres:
+    image: ${IMAGE}:${IMAGE_TAG}
+
+    container_name: ${CONTAINER_NAME}
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    volumes:
+      - ${APP_DATA_DIR}/data:/var/lib/postgresql/data
+
+    networks:
+      default:
+        aliases:
+          - postgres
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true
