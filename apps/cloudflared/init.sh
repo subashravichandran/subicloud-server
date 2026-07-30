@@ -13,9 +13,4 @@ if [ ! -f "$APP_DATA_DIR/credentials.json" ]; then
     exit 1
 fi
 
-sed \
-    -e "s|{{TUNNEL_ID}}|$TUNNEL_ID|g" \
-    "$APP_DIR/config.template.yml" \
-    > "$APP_DATA_DIR/config.yml"
-
-echo "[INFO] Cloudflared configuration generated."
+echo "[INFO] Cloudflared is ready."

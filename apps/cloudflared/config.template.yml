@@ -3,7 +3,4 @@ tunnel: {{TUNNEL_ID}}
 credentials-file: /etc/cloudflared/credentials.json
 
 ingress:
-  - hostname: dash.subicloud.com
-    service: http://caddy:80
 
-  - service: http_status:404

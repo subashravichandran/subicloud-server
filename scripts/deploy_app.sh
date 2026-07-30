@@ -140,3 +140,14 @@ fi
 
 success "$DISPLAY_NAME is running."
 success "$DISPLAY_NAME deployed successfully."
+
+################################################################################
+# Post-deployment hooks
+################################################################################
+
+POST_DEPLOY_SCRIPT="$PLATFORM_DIR/scripts/post_deploy.sh"
+
+if [ -x "$POST_DEPLOY_SCRIPT" ]; then
+    log "Running post-deployment hooks..."
+    "$POST_DEPLOY_SCRIPT"
+fi

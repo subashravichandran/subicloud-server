@@ -126,3 +126,56 @@ HTTPS verified
 
 Deployment complete
 ```
+
+## High Priority
+
+### Decouple Applications from Domain Structure
+
+**Goal**
+
+Applications should not assume whether a deployment uses a subdomain of `subicloud.com` or a completely custom domain.
+
+**Current Idea**
+
+```bash
+PLATFORM_NAME=john
+BASE_DOMAIN=subicloud.com
+
+PUBLIC_HOSTNAMES=dash.${PLATFORM_NAME}.${BASE_DOMAIN}
+```
+
+This ties applications to a specific domain structure.
+
+---
+
+**Proposed Design**
+
+Store the platform's root domain in `platform.conf`:
+
+```bash
+PLATFORM_DOMAIN=john.subicloud.com
+```
+
+Applications use:
+
+```bash
+PUBLIC_HOSTNAMES=dash.${PLATFORM_DOMAIN}
+```
+
+Examples:
+
+| PLATFORM_DOMAIN | Generated Hostname |
+|-----------------|--------------------|
+| home.subicloud.com | dash.home.subicloud.com |
+| john.subicloud.com | dash.john.subicloud.com |
+| johncloud.com | dash.johncloud.com |
+| cloud.acme.com | dash.cloud.acme.com |
+
+---
+
+**Benefits**
+
+- Applications remain domain-agnostic.
+- Supports both SubiCloud-managed subdomains and customer-owned domains.
+- Future-proof for enterprise deployments.
+- Customer onboarding requires updating only `platform.conf`.
