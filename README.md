@@ -113,3 +113,13 @@ docker run hello-world
 ```
 
 You should see the "Hello from Docker!" message.
+
+## Network Setup 
+
+- Configure a DHCP reservation in the router before deploying applications.
+- Verify the server always receives the same LAN IP.
+- Test:
+  - SSH
+  - Cloudflare Tunnel
+  - Reverse proxy
+  - Public domain
