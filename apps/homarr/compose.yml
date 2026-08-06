@@ -15,6 +15,7 @@ services:
 
     volumes:
       - /srv/data/homarr:/appdata
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
     networks:
       - subicloud
