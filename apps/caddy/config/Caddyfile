@@ -1,3 +1,8 @@
+http://subicloud.com {
+    root * /srv/subicloud-homepage
+    file_server
+}
+
 http://dash.subicloud.com {
     reverse_proxy homarr:7575
 }
