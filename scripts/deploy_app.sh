@@ -119,9 +119,14 @@ cd "$APP_DIR"
 
 log "Starting Docker containers..."
 
-docker compose \
-    --env-file "$APP_DATA_DIR/.env" \
-    up -d --force-recreate
+if [ -f "$APP_DATA_DIR/.env" ]; then
+    docker compose \
+        --env-file "$APP_DATA_DIR/.env" \
+        up -d --force-recreate
+else
+    docker compose \
+        up -d --force-recreate
+fi
     
 ################################################################################
 # Verify deployment
